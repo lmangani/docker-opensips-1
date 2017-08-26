@@ -3,21 +3,24 @@ MAINTAINER Razvan Crainea <razvan@opensips.org>
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
-ARG VERSION=2.3
+ENV TLS 1
+ARG VERSION=2.2
 
 WORKDIR /usr/local/src
 
-RUN apt-get update -qq && apt-get install -y build-essential \
-		git bison flex m4 pkg-config libncurses5-dev rsyslog
+RUN apt-get update -qq && apt-get install -y ca-certificates && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 049AD65B && \
+    echo "deb http://apt.opensips.org jessie $VERSION-releases" >>/etc/apt/sources.list && \
+    apt-get update -qq && apt-get install -f -yqq --no-install-recommends rsyslog opensips opensips-json-module opensips-tls-module opensips-tlsmgm-module opensips-wss-module && \
+    rm -rf /var/lib/apt/lists/* && \
 
-RUN git clone https://github.com/OpenSIPS/opensips.git -b $VERSION opensips_$VERSION
-RUN cd opensips_$VERSION && make all && make install
-
-RUN echo -e "local0.* -/var/log/opensips.log\n& stop" > /etc/rsyslog.d/opensips.conf
-RUN touch /var/log/opensips.log
+    echo -e "local0.* -/var/log/opensips.log\n& stop" > /etc/rsyslog.d/opensips.conf && \
+    touch /var/log/opensips.log
 
 EXPOSE 5060/udp
+EXPOSE 5061/tcp
 
+COPY conf/opensips_tls.cfg /usr/local/etc/opensips/opensips_tls.cfg
 COPY run.sh /run.sh
 
 ENTRYPOINT ["/run.sh"]
