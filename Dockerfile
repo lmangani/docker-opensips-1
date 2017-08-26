@@ -20,7 +20,7 @@ RUN apt-get update -qq && apt-get install -y ca-certificates && \
 EXPOSE 5060/udp
 EXPOSE 5061/tcp
 
-COPY conf/opensips_tls.cfg /usr/local/etc/opensips/opensips_tls.cfg
+COPY conf/opensips_tls.cfg /etc/opensips/opensips.cfg
 COPY run.sh /run.sh
 
 ENTRYPOINT ["/run.sh"]
