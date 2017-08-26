@@ -1,0 +1,16 @@
+version: '2'
+services:
+  opensips:
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    image: qxip/docker-opensips
+    volumes:
+      - /docker/data/opensips/etc:/etc/opensips
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
+    ports:
+     - '5060:5060'
+     - '5061:5061'
