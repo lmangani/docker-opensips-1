@@ -4,9 +4,7 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
-    image: qxip/docker-opensips
-    volumes:
-      - /docker/data/opensips/etc:/etc/opensips
+    image: opensips/docker-opensips
     ulimits:
       nofile:
         soft: 64000
